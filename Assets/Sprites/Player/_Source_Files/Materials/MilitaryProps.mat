@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: MilitaryProps
-  m_Shader: {fileID: 4800000, guid: 9d22ff1865e13924f9aa3f1e7aee9d48, type: 3}
+  m_Shader: {fileID: 4800000, guid: d883ed33ad897524ab8ece157443420c, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords:
   - _EMISSION

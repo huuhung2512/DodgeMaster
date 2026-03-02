@@ -13,7 +13,7 @@ public class FlyItem : MonoBehaviour
         if (player != null)
         {
             player.FlyUp(flyForce, flyDuration);
-            Destroy(gameObject); // Xoá item sau khi dùng
+            gameObject.SetActive(false); // Xoá item sau khi dùng
         }
     }
 

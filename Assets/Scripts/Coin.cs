@@ -13,26 +13,33 @@ public class Coin : MonoBehaviour
 
         if (isAttracted && target != null)
         {
+            // Increase speed over time for "swoosh" effect
+            moveSpeed += 30f * Time.deltaTime; 
             transform.position = Vector3.MoveTowards(transform.position, target.position, moveSpeed * Time.deltaTime);
 
             if (Vector3.Distance(transform.position, target.position) < minDistance)
             {
-                AudioManager.Instance.PlaySound(GameEnum.ESound.PickupCoin);
-                ParticleManager.Instance.PlayGoldEffect(transform.position);
-                PlayerManager.numberOfCoin += 1;
-                Destroy(gameObject);
+                Collect();
             }
         }
+    }
+
+    private void Collect()
+    {
+        AudioManager.Instance.PlaySound(GameEnum.ESound.PickupCoin);
+        ParticleManager.Instance.PlayGoldEffect(transform.position);
+        PlayerManager.numberOfCoin += 1;
+        gameObject.SetActive(false);
+        // Reset state for pooling
+        isAttracted = false; 
+        moveSpeed = 20f; // Reset speed
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player") && !isAttracted)
         {
-            AudioManager.Instance.PlaySound(GameEnum.ESound.PickupCoin);
-            ParticleManager.Instance.PlayGoldEffect(transform.position);
-            PlayerManager.numberOfCoin += 1;
-            Destroy(gameObject);
+            Collect();
         }
     }
     public void Attract(Transform player)

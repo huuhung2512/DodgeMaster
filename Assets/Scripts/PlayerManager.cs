@@ -20,15 +20,22 @@ public class PlayerManager : SingletonBehavior<PlayerManager>
     public TextMeshProUGUI distanceText;
     public TextMeshProUGUI bestScoreText;  // Hiển thị best score
     public TextMeshProUGUI scoreText;      // Hiển thị điểm số khi kết thúc
+    public TextMeshProUGUI velocityText;      // Hiển thị điểm số khi kết thúc
     [SerializeField] private Animator scoreTextAnim;
     [SerializeField] private Animator bestScoreTextAnim;
     private float startingZ;    // Vị trí bắt đầu của player trên trục Z
     private int bestScore;      // Đổi bestScore thành int
 
+    [SerializeField] private int stopDistance = 100; // Có thể gán 100 hoặc 200
+    private bool hasStoppedAutomatically = false;    // Đảm bảo chỉ dừng 1 lần
+
+    public PlayerController playerC;
+
     void Start()
     {
         ResetGameState();
         LoadBestScore();
+
         startingZ = player.position.z;  // Lưu lại vị trí Z ban đầu của player
     }
 
@@ -39,8 +46,9 @@ public class PlayerManager : SingletonBehavior<PlayerManager>
         if (isGameStarted)
         {
             UpdatePlayerScore();
+            velocityText.text = playerC.fowardSpeed * 3.6f + "km/h";
         }
-        if (SwipeManager.tap && !isGameStarted)
+        if (SwipeManager.tap && (!isGameStarted || hasStoppedAutomatically))
         {
             StartGame();
         }
@@ -94,12 +102,30 @@ public class PlayerManager : SingletonBehavior<PlayerManager>
     {
         playerScore = Mathf.FloorToInt(player.position.z - startingZ); // Dùng FloorToInt để lấy số nguyên
         distanceText.text = playerScore + " m";
+
+        if (playerScore == stopDistance && !hasStoppedAutomatically)
+        {
+            StopAtDistance();
+            stopDistance += 100;
+        }
+    }
+
+    void StopAtDistance()
+    {
+        isGameStarted = false;
+        Time.timeScale = 0.5f;  
+        tabToStart.SetActive(true);  
+        hasStoppedAutomatically = true;  
     }
 
     void StartGame()
     {
         isGameStarted = true;
+        isPaused = false;
+        Time.timeScale = 1f;
         tabToStart.SetActive(false);
+        hasStoppedAutomatically = false;
+
     }
 
     void UpdateCoinText()

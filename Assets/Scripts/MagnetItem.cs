@@ -11,7 +11,7 @@ public class MagnetItem : MonoBehaviour
         if (player != null)
         {
             player.ActivateMagnet(magnetRadius, magnetDuration);
-            Destroy(gameObject); // Xóa item sau khi dùng
+            gameObject.SetActive(false); // Xóa item sau khi dùng
         }
     }
 }

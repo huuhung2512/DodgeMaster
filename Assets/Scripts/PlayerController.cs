@@ -20,7 +20,6 @@ public class PlayerController : MonoBehaviour
     public Transform positionItem;
     public Animator animator;
     private Coroutine slideCoroutine;
-
     private const float slideDuration = 1.1f;
     private const float groundCheckRadius = 0.15f;
     private const float speedIncreaseRate = 0.2f;
@@ -35,7 +34,6 @@ public class PlayerController : MonoBehaviour
     {
         controller = GetComponent<CharacterController>();
     }
-
     private void Update()
     {
         // Kiểm tra nếu game đã bị tạm dừng hoặc kết thúc
@@ -299,16 +297,17 @@ public class PlayerController : MonoBehaviour
         // Kích hoạt hiệu ứng ở chân nhân vật
         ParticleManager.Instance.PlayItemEffect(positionItem.position, GameEnum.EParticle.ItemCollectCoin);
 
+        Collider[] nearbyGold = new Collider[20]; // Buffer for NonAlloc
         float elapsedTime = 0f;
         while (elapsedTime < duration)
         {
-            // Tìm và hút vàng trong bán kính
-            Collider[] nearbyGold = Physics.OverlapSphere(transform.position, magnetRadius);
-            foreach (var collider in nearbyGold)
+            // Tìm và hút vàng trong bán kính using NonAlloc
+            int count = Physics.OverlapSphereNonAlloc(transform.position, magnetRadius, nearbyGold);
+            for (int i = 0; i < count; i++)
             {
-                if (collider.CompareTag("Coin"))
+                if (nearbyGold[i].CompareTag("Coin"))
                 {
-                    Coin gold = collider.GetComponent<Coin>();
+                    Coin gold = nearbyGold[i].GetComponent<Coin>();
                     if (gold != null)
                     {
                         gold.Attract(transform);

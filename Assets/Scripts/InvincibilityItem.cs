@@ -10,7 +10,7 @@ public class InvincibilityItem : MonoBehaviour
         if (player != null)
         {
             player.ActivateInvincibility();
-            Destroy(gameObject); // Xóa item sau khi dùng
+            gameObject.SetActive(false); // Xóa item sau khi dùng
         }
     }
 }
